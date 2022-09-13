@@ -14,5 +14,8 @@
     "16": "images/jiraaid24.png",
     "48": "images/jiraaid24.png",
     "128": "images/jiraaid24.png"
+  },
+  "action": {
+    "default_popup": "html/popup.html"
   }
 }
