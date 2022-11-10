@@ -34,10 +34,17 @@ const DEV_COMPLETED = [
   "pending prod deployment",
 ];
 const DONE = ["can't reproduce", "done", "in production", "won't do"];
-
+const ALL_STATUSES = [
+  ...TODO,
+  ...IN_PLANNING,
+  ...IN_PROGRESS,
+  ...IN_REVIEW,
+  ...DEV_COMPLETED,
+  ...DONE,
+];
 ////////////////////////////////////////////////////////////////////////
 
-const colorStatuses = () => {
+const colorStatuses = async () => {
   waitForElm(".ghx-extra-field").then(() => {
     const spans = document.getElementsByClassName("ghx-extra-field");
     setFrames(spans);
@@ -88,4 +95,70 @@ observer.observe(document.getElementById("gh"), {
   subtree: true,
 });
 
-colorStatuses();
+////////////////////////////////////////
+
+const onlyUnique = async (value, index, self) => {
+  return self.indexOf(value) === index;
+};
+
+const createStatusFilterButtons = async () => {
+  waitForElm(".ghx-assigned-work-stats").then(() => {
+    const backlogHeader = document.querySelector("#ghx-header");
+    const allStatusSpans = document.getElementsByClassName("ghx-extra-field");
+    const allStatusSpansArr = Array.prototype.slice.call(allStatusSpans);
+
+    let allUniqueStatusSpans = [];
+    let allStatusesTexts = [...ALL_STATUSES];
+    for (const statusSpan of allStatusSpansArr) {
+      if (allStatusesTexts.includes(statusSpan.textContent.toLowerCase())) {
+        allUniqueStatusSpans = [...allUniqueStatusSpans, statusSpan];
+        allStatusesTexts = allStatusesTexts.filter(
+          (val) => val !== statusSpan.textContent.toLowerCase()
+        );
+      }
+    }
+
+    for (let uniqueStatusSpan of allUniqueStatusSpans) {
+      const child = uniqueStatusSpan.cloneNode(true);
+      child.onclick = () => {
+        toggleStatusVisibility(child);
+      };
+      backlogHeader.appendChild(child);
+    }
+  });
+};
+
+const toggleStatusVisibility = async (selectedStatusSpan) => {
+  const allStatusSpans = document.getElementsByClassName("ghx-extra-field");
+  const allStatusSpansArr = Array.prototype.slice.call(allStatusSpans);
+
+  for (const statusSpan of allStatusSpansArr) {
+    if (
+      statusSpan.textContent.toLowerCase() ===
+      selectedStatusSpan.textContent.toLowerCase()
+    ) {
+      const ticketDiv = statusSpan.parentElement.parentElement.parentElement;
+      if (ticketDiv.className.includes("js-issue-extra-fields-supported")) {
+        const visibility = ticketDiv.style.visibility;
+        if (!visibility || visibility === "visible") {
+          ticketDiv.style.visibility = "hidden";
+          ticketDiv.style.height = "0px";
+        } else if (visibility === "hidden") {
+          ticketDiv.style.visibility = "visible";
+          ticketDiv.style.height = "auto";
+        }
+      }
+    }
+  }
+
+  let opacity = selectedStatusSpan.style.opacity;
+  if (!opacity || opacity == 1) {
+    selectedStatusSpan.style.opacity = 0.5;
+  } else {
+    selectedStatusSpan.style.opacity = 1;
+  }
+};
+
+colorStatuses().then(() => {
+  createStatusFilterButtons();
+});
