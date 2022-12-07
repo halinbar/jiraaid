@@ -5,7 +5,28 @@
   "content_scripts": [
     {
       "matches": ["https://paradoxai.atlassian.net/*"],
-      "js": ["content.js"]
+      "js": ["contentScripts/jira/content.js"]
+    },
+    {
+      "matches": ["https://www.google.com/*"],
+      "js": ["contentScripts/google/content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "contentScripts/jira/main.js",
+        "contentScripts/jira/colorStatuses.js",
+        "contentScripts/jira/domInteraction.js"
+      ],
+      "matches": ["https://paradoxai.atlassian.net/*"]
+    },
+    {
+      "resources": [
+        "contentScripts/google/main.js",
+        "contentScripts/google/testImport.js"
+      ],
+      "matches": ["https://www.google.com/*"]
     }
   ],
   "name": "Jira Aid",

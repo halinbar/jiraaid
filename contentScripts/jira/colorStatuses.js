@@ -1,22 +1,4 @@
-const waitForElm = (selector) => {
-  return new Promise((resolve) => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  });
-};
+import { waitForElm } from "./domInteraction.js";
 
 const TODO = ["to do", "planning completed", "reopened", "stuck"];
 const IN_PLANNING = ["to plan", "in planning"];
@@ -44,7 +26,7 @@ const ALL_STATUSES = [
 ];
 ////////////////////////////////////////////////////////////////////////
 
-const colorStatuses = async () => {
+export const colorStatuses = async () => {
   waitForElm(".ghx-extra-field").then(() => {
     const spans = document.getElementsByClassName("ghx-extra-field");
     setFrames(spans);
@@ -97,11 +79,7 @@ observer.observe(document.getElementById("gh"), {
 
 ////////////////////////////////////////
 
-const onlyUnique = async (value, index, self) => {
-  return self.indexOf(value) === index;
-};
-
-const createStatusFilterButtons = async () => {
+export const createStatusFilterButtons = async () => {
   waitForElm(".ghx-assigned-work-stats").then(() => {
     const backlogHeader = document.querySelector("#ghx-header");
     const allStatusSpans = document.getElementsByClassName("ghx-extra-field");
@@ -158,7 +136,3 @@ const toggleStatusVisibility = async (selectedStatusSpan) => {
     selectedStatusSpan.style.opacity = 1;
   }
 };
-
-colorStatuses().then(() => {
-  createStatusFilterButtons();
-});
