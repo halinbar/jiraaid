@@ -2,25 +2,25 @@ import { waitForElm } from "./domInteraction.js";
 
 const TODO = ["to do", "planning completed", "reopened", "stuck"];
 const IN_PLANNING = ["to plan", "in planning"];
-const IN_PROGRESS = ["in ol", "in progress"];
-const IN_REVIEW = [
+const IN_PROGRESS = [
+  "in progress",
   "in review",
-  "pending qa",
-  "qa completed",
-  "qa in progress",
   "validation needed",
+  "in test env",
 ];
 const DEV_COMPLETED = [
-  "pending stg deployment",
-  "in stg",
+  "qa in progress",
+  "qa done",
+  "pending test deployment",
   "pending prod deployment",
+  "in production",
+  "in ol",
 ];
-const DONE = ["can't reproduce", "done", "in production", "won't do"];
+const DONE = ["can't reproduce", "done", "won't do"];
 const ALL_STATUSES = [
   ...TODO,
   ...IN_PLANNING,
   ...IN_PROGRESS,
-  ...IN_REVIEW,
   ...DEV_COMPLETED,
   ...DONE,
 ];
@@ -46,8 +46,6 @@ const setFrames = (spans) => {
       span.style.backgroundColor = "#FDDA0D";
     } else if (IN_PROGRESS.includes(span.textContent.toLowerCase())) {
       span.style.backgroundColor = "#6495ED";
-    } else if (IN_REVIEW.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#ADD8E6";
     } else if (DEV_COMPLETED.includes(span.textContent.toLowerCase())) {
       span.style.backgroundColor = "#E4D00A";
     } else if (DONE.includes(span.textContent.toLowerCase())) {
@@ -63,7 +61,6 @@ const setTexts = (texts) => {
     } else if (IN_PLANNING.includes(text.textContent.toLowerCase())) {
     } else if (IN_PROGRESS.includes(text.textContent.toLowerCase())) {
       text.style.color = "#ffffff";
-    } else if (IN_REVIEW.includes(text.textContent.toLowerCase())) {
     } else if (DEV_COMPLETED.includes(text.textContent.toLowerCase())) {
     } else if (DONE.includes(text.textContent.toLowerCase())) {
     }
