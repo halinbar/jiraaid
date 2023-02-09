@@ -8,14 +8,7 @@ const IN_PROGRESS = [
   "validation needed",
   "in test env",
 ];
-const DEV_COMPLETED = [
-  "qa in progress",
-  "qa done",
-  "pending test deployment",
-  "pending prod deployment",
-  "in production",
-  "in ol",
-];
+const DEV_COMPLETED = ["qa in progress", "qa done", "in production", "in ol"];
 const DONE = ["can't reproduce", "done", "won't do"];
 const ALL_STATUSES = [
   ...TODO,
