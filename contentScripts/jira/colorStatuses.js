@@ -17,47 +17,86 @@ const ALL_STATUSES = [
   ...DEV_COMPLETED,
   ...DONE,
 ];
+
+const STATUSES_CONTAINER_ID = "jaid-statuses-container";
+const CLICKED_STATUS_ATTRIBUTE = "jaid-clicked-status";
 ////////////////////////////////////////////////////////////////////////
 
 export const colorStatuses = async () => {
   waitForElm(".ghx-extra-field").then(() => {
     const spans = document.getElementsByClassName("ghx-extra-field");
     setFrames(spans);
-    const texts = document.getElementsByClassName("ghx-extra-field-content");
-    setTexts(texts);
   });
 };
 
 const setFrames = (spans) => {
   for (let span of spans) {
-    span.style.padding = "0px 8px 0px 8px";
-    span.style.border = "1px solid black";
-    span.style.borderRadius = "6px";
+    span.style.padding = "2px 8px 2px 8px";
+    span.style.borderRadius = "3px";
+    span.style.cursor = "pointer";
+
     if (TODO.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#101010";
+      span.style.backgroundColor = "#B2B2B2";
     } else if (IN_PLANNING.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#FDDA0D";
+      span.style.backgroundColor = "#f6b26b";
     } else if (IN_PROGRESS.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#6495ED";
+      span.style.backgroundColor = "#9ADCFF";
     } else if (DEV_COMPLETED.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#E4D00A";
+      span.style.backgroundColor = "#ffe77d";
     } else if (DONE.includes(span.textContent.toLowerCase())) {
-      span.style.backgroundColor = "#4CBB17	";
+      span.style.backgroundColor = "#A0D995";
     }
   }
 };
 
-const setTexts = (texts) => {
-  for (let text of texts) {
-    if (TODO.includes(text.textContent.toLowerCase())) {
-      text.style.color = "#ffffff";
-    } else if (IN_PLANNING.includes(text.textContent.toLowerCase())) {
-    } else if (IN_PROGRESS.includes(text.textContent.toLowerCase())) {
-      text.style.color = "#ffffff";
-    } else if (DEV_COMPLETED.includes(text.textContent.toLowerCase())) {
-    } else if (DONE.includes(text.textContent.toLowerCase())) {
+const addContainerStyle = (el) => {
+  el.id = STATUSES_CONTAINER_ID;
+  el.style.display = "flex";
+  el.style.flexFlow = "wrap";
+  el.style.width = "100%";
+};
+
+const addStatusButtonStyle = (el) => {
+  el.style.margin = "5px";
+  el.style.boxShadow = "2px 5px 5px #e6e6e6";
+
+  el.onmouseover = () => {
+    el.style.opacity = 0.5;
+  };
+  el.onmouseout = () => {
+    if (!el.getAttribute(CLICKED_STATUS_ATTRIBUTE)) {
+      el.style.opacity = 1;
     }
-  }
+  };
+};
+
+const resetButton = (parent) => {
+  const reset = document.createElement("p");
+  reset.id = "reset-button";
+  reset.innerHTML = "reset";
+
+  reset.style.margin = "5px";
+  reset.style.textDecoration = "underline";
+  reset.style.alignSelf = "flex-end";
+  reset.style.cursor = "pointer";
+  reset.style.color = "#42526E";
+
+  reset.onmouseover = () => {
+    reset.style.color = "#B2B2B2";
+  };
+  reset.onmouseout = () => {
+    reset.style.color = "#42526E";
+  };
+  reset.onclick = resetClickedStatuses;
+  parent.appendChild(reset);
+};
+
+const resetClickedStatuses = () => {
+  const statuesesContainer = document.getElementById(STATUSES_CONTAINER_ID);
+  const filteredOutStatuses = statuesesContainer.querySelectorAll(
+    `[${CLICKED_STATUS_ATTRIBUTE}="true"]`
+  );
+  for (const status of filteredOutStatuses) toggleStatusVisibility(status);
 };
 
 const observer = new MutationObserver(colorStatuses);
@@ -72,6 +111,8 @@ observer.observe(document.getElementById("gh"), {
 export const createStatusFilterButtons = async () => {
   waitForElm(".ghx-assigned-work-stats").then(() => {
     const backlogHeader = document.querySelector("#ghx-header");
+    const statusesContainer = document.createElement("div");
+    addContainerStyle(statusesContainer);
     const allStatusSpans = document.getElementsByClassName("ghx-extra-field");
     const allStatusSpansArr = Array.prototype.slice.call(allStatusSpans);
 
@@ -88,11 +129,14 @@ export const createStatusFilterButtons = async () => {
 
     for (let uniqueStatusSpan of allUniqueStatusSpans) {
       const child = uniqueStatusSpan.cloneNode(true);
+      addStatusButtonStyle(child);
       child.onclick = () => {
         toggleStatusVisibility(child);
       };
-      backlogHeader.appendChild(child);
+      statusesContainer.appendChild(child);
     }
+    resetButton(statusesContainer);
+    backlogHeader.appendChild(statusesContainer);
   });
 };
 
@@ -119,10 +163,12 @@ const toggleStatusVisibility = async (selectedStatusSpan) => {
     }
   }
 
-  let opacity = selectedStatusSpan.style.opacity;
-  if (!opacity || opacity == 1) {
+  let clicked = selectedStatusSpan.getAttribute(CLICKED_STATUS_ATTRIBUTE);
+  if (!clicked) {
     selectedStatusSpan.style.opacity = 0.5;
+    selectedStatusSpan.setAttribute(CLICKED_STATUS_ATTRIBUTE, true);
   } else {
     selectedStatusSpan.style.opacity = 1;
+    selectedStatusSpan.removeAttribute(CLICKED_STATUS_ATTRIBUTE);
   }
 };
