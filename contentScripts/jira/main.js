@@ -1,5 +1,8 @@
-import { colorStatuses, createStatusFilterButtons } from "./colorStatuses.js";
+import { redesignStatuses } from "./tickets.js";
+import { createJiraAidButtonsBar } from "./jiraAidButtonsBar.js";
 
-colorStatuses().then(() => {
-  createStatusFilterButtons();
-});
+const main = () => {
+  redesignStatuses();
+  createJiraAidButtonsBar();
+};
+main();

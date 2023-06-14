@@ -4,20 +4,19 @@
   "default_locale": "en",
   "content_scripts": [
     {
-      "matches": ["https://paradoxai.atlassian.net/*"],
+      "matches": ["https://*.atlassian.net/*"],
       "js": ["contentScripts/jira/content.js"]
-    },
-    {
-      "matches": ["https://www.google.com/*"],
-      "js": ["contentScripts/google/content.js"]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
         "contentScripts/jira/main.js",
-        "contentScripts/jira/colorStatuses.js",
-        "contentScripts/jira/domInteraction.js"
+        "contentScripts/jira/tickets.js",
+        "contentScripts/jira/domInteraction.js",
+        "contentScripts/jira/consts.js",
+        "contentScripts/jira/jiraAidButtonsBar.js",
+        "contentScripts/jira/multiSelectButtons.js"
       ],
       "matches": ["https://paradoxai.atlassian.net/*"]
     },
