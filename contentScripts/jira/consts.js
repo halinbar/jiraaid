@@ -1,18 +1,19 @@
-export const TODO = ["to do", "planning completed", "reopened", "stuck"];
-export const IN_PLANNING = ["to plan", "in planning"];
+export const TODO = [
+  "to do",
+  "planning completed",
+  "reopened",
+  "stuck",
+  "to plan",
+];
+export const IN_PLANNING = ["in planning"];
 export const IN_PROGRESS = [
   "in progress",
   "in review",
   "validation needed",
   "in test env",
 ];
-export const DEV_COMPLETED = [
-  "qa in progress",
-  "qa done",
-  "in production",
-  "in ol",
-];
-export const DONE = ["can't reproduce", "done", "won't do"];
+export const DEV_COMPLETED = ["qa in progress", "in production", "in ol"];
+export const DONE = ["can't reproduce", "qa done", "done", "won't do"];
 export const ALL_STATUSES = [
   ...TODO,
   ...IN_PLANNING,
